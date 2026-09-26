@@ -53,7 +53,16 @@ body{
 #startBtn:hover, #startBtn.active{background:var(--hover);}
 .winlogo{width:18px; height:18px; display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:2px;}
 .winlogo span{background:#eee;}
-#searchbar{background:var(--panel); border:1px solid var(--border); border-radius:4px; color:var(--muted); font-size:12px; padding:0 10px; height:32px; display:flex; align-items:center; width:200px; flex-shrink:0;}
+#searchbar{background:var(--panel); border:1px solid var(--border); border-radius:4px; color:var(--fg); font-size:12px; padding:0 10px; height:32px; width:220px; flex-shrink:0; font-family:inherit; outline:none;}
+#searchbar::placeholder{color:var(--muted);}
+#searchWrap{position:relative;}
+#searchResults{position:fixed; bottom:56px; left:8px; width:280px; background:var(--panel); border:1px solid var(--border); border-radius:8px; box-shadow:0 10px 40px rgba(0,0,0,.6); display:none; flex-direction:column; z-index:650; max-height:360px; overflow-y:auto;}
+#searchResults.open{display:flex;}
+.sr-empty{padding:14px; font-size:12px; color:var(--muted);}
+.sr-group{padding:8px 12px 2px; font-size:10.5px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em;}
+.sr-item{padding:8px 12px; font-size:12.5px; color:var(--fg); border-radius:4px; cursor:pointer; display:flex; align-items:center; gap:8px; margin:0 5px;}
+.sr-item:hover, .sr-item.active{background:var(--hover);}
+.sr-item .ico{width:20px; height:20px; flex-shrink:0; display:flex; align-items:center; justify-content:center;}
 .taskicon{width:40px; height:40px; display:flex; align-items:center; justify-content:center; cursor:pointer; border-radius:4px; position:relative;}
 .taskicon:hover{background:var(--hover);}
 .taskicon.open::after{content:""; position:absolute; bottom:2px; left:50%; transform:translateX(-50%); width:16px; height:2px; background:var(--accent);}
@@ -88,8 +97,8 @@ body{
 
 .phase-screen{position:fixed; inset:0; background:#000; color:#eee; z-index:2000; display:flex; flex-direction:column; align-items:center; justify-content:center; transition:opacity .5s ease; padding:20px;}
 #bootScreen{align-items:flex-start; justify-content:flex-start; padding:24px;}
-#bootLines{font-family:"Courier New",monospace; font-size:12px; color:#9a9a9a; line-height:1.7; text-align:left;}
-#bootLines div{opacity:0; animation:bootline .15s forwards;}
+#bootLines{font-family:"Courier New",monospace; font-size:12px; color:#9a9a9a; line-height:1.6; text-align:left; max-height:calc(100vh - 48px); max-height:calc(100dvh - 48px); overflow-y:hidden; white-space:pre;}
+#bootLines div{opacity:0; animation:bootline .18s ease forwards;}
 @keyframes bootline{to{opacity:1;}}
 .bootlogo-mark{width:52px; height:52px; border:3px solid #eee; border-radius:8px; margin-bottom:18px; display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:4px; padding:8px;}
 .bootlogo-mark span{background:#eee; border-radius:1px;}
@@ -111,6 +120,7 @@ body{
 .fe-toolbar{display:flex; gap:8px; margin-bottom:12px;}
 .fe-btn{background:var(--panel2); border:1px solid var(--border); color:var(--fg); font-size:12px; padding:6px 12px; border-radius:4px; cursor:pointer;}
 .fe-btn:hover{background:var(--hover);}
+.fe-btn.store-tab.active{background:var(--hover); border-color:var(--accent); color:#fff;}
 .fe-file{display:flex; align-items:center; gap:10px; padding:7px 6px; border-radius:4px; font-size:12.5px;}
 .fe-file:hover{background:var(--hover);}
 .fe-file .fico{width:20px; height:20px; background:var(--muted); border-radius:3px; flex-shrink:0;}
@@ -139,7 +149,33 @@ body{
 .game-board{display:grid; gap:6px;}
 .ttt-cell{width:80px; height:80px; background:var(--panel2); border:1px solid var(--border); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:34px; cursor:pointer;}
 .g2048-cell{width:70px; height:70px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:700; background:#2a2a2a;}
-.wm-hole{width:70px; height:70px; background:#2a2a2a; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:30px; overflow:hidden;}
+.wm-hole{width:70px; height:70px; background:#2a2a2a; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:30px; overflow:hidden; transition:background .15s;}
+.wm-hole.up{animation:molepop .18s ease;}
+@keyframes molepop{ 0%{transform:scale(.4); } 70%{transform:scale(1.15);} 100%{transform:scale(1);} }
+.g2048-cell{transition:background .15s ease, color .15s ease;}
+.g2048-cell.pop{animation:tilepop .16s ease;}
+@keyframes tilepop{ 0%{transform:scale(.7);} 60%{transform:scale(1.08);} 100%{transform:scale(1);} }
+.mem-cell{transition:transform .18s ease, background .18s ease;}
+.mem-cell.flipin{animation:flipin .22s ease;}
+@keyframes flipin{ from{transform:rotateY(90deg); opacity:.3;} to{transform:rotateY(0deg); opacity:1;} }
+.ttt-cell{transition:background .15s;}
+.wall-swatch{width:44px; height:30px; border-radius:5px; cursor:pointer; border:2px solid transparent; flex-shrink:0;}
+.wall-swatch.active{border-color:#fff;}
+body.contrast{ --bg:#000000; --panel:#000000; --panel2:#111111; --border:#ffffff; --fg:#ffffff; --muted:#dddddd; }
+body.contrast .window{border-width:2px;}
+body.bigcursor, body.bigcursor *{cursor:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><path d="M4 2 L4 34 L13 26 L19 38 L24 36 L18 24 L30 24 Z" fill="white" stroke="black" stroke-width="2"/></svg>') 4 2, auto !important;}
+#game3dOverlay{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; background:rgba(0,0,0,.55); color:#fff; font-size:14px; text-align:center;}
+#game3dOverlay.hidden{display:none;}
+
+#lockScreen{position:fixed; inset:0; z-index:1800; display:none; flex-direction:column; align-items:center; justify-content:space-between; padding:60px 20px 70px;
+  background:radial-gradient(circle at 15% 20%, rgba(138,180,255,0.30), transparent 40%), radial-gradient(circle at 85% 15%, rgba(199,138,224,0.25), transparent 45%), linear-gradient(160deg, #05060f 0%, #0c1024 35%, #1a1140 65%, #2b1650 100%);
+  color:#fff; touch-action:none; cursor:pointer; opacity:1; transition:opacity .35s ease, transform .35s ease;}
+#lockScreen.fading{opacity:0; transform:translateY(-40px);}
+#lockScreen .lk-time{font-size:64px; font-weight:300; letter-spacing:.02em; text-shadow:0 2px 14px rgba(0,0,0,.5);}
+#lockScreen .lk-date{font-size:15px; color:#cfcfe0; margin-top:6px;}
+#lockScreen .lk-hint{display:flex; flex-direction:column; align-items:center; gap:8px; font-size:12.5px; color:#dcdcf0;}
+#lockScreen .lk-chevron{width:22px; height:22px; border-top:2px solid #dcdcf0; border-right:2px solid #dcdcf0; transform:rotate(-45deg); animation:lkbounce 1.6s ease-in-out infinite;}
+@keyframes lkbounce{ 0%,100%{transform:rotate(-45deg) translateY(0);} 50%{transform:rotate(-45deg) translateY(-8px);} }
 </style>
 </head>
 <body>
@@ -149,6 +185,14 @@ body{
   <div class="bootlogo-mark"><span></span><span></span><span></span><span></span></div>
   <div class="bootlogo-text">Winstek 1</div>
   <div class="bootlogo-spinner"></div>
+</div>
+<div id="lockScreen">
+  <div></div>
+  <div style="text-align:center;">
+    <div class="lk-time" id="lkTime">00:00</div>
+    <div class="lk-date" id="lkDate"></div>
+  </div>
+  <div class="lk-hint"><div class="lk-chevron"></div><div>Swipe up or press Space to unlock</div></div>
 </div>
 
 <div id="desktop"><div id="stars"></div></div>
@@ -224,7 +268,13 @@ body{
 
 <div class="window hidden" id="win-store" style="top:55px; left:150px; width:580px; height:460px;">
   <div class="titlebar2"><span class="t">App Store</span><div class="wbtn min">—</div><div class="wbtn max">▢</div><div class="wbtn close">✕</div></div>
-  <div class="wbody"><div id="storeGrid" style="display:grid; grid-template-columns:1fr 1fr; gap:12px;"></div></div>
+  <div class="wbody">
+    <div class="fe-toolbar">
+      <button class="fe-btn store-tab" data-kind="app">Apps</button>
+      <button class="fe-btn store-tab" data-kind="game">Games</button>
+    </div>
+    <div id="storeGrid" style="display:grid; grid-template-columns:1fr 1fr; gap:12px;"></div>
+  </div>
   <div class="resizer"></div>
 </div>
 
@@ -312,12 +362,167 @@ body{
   <div class="resizer"></div>
 </div>
 
+<div class="window hidden" id="win-3d" style="top:60px; left:210px; width:540px; height:460px;">
+  <div class="titlebar2"><span class="t">Neon Runner (3D)</span><div class="wbtn min">—</div><div class="wbtn max">▢</div><div class="wbtn close">✕</div></div>
+  <div class="wbody" style="padding:0; position:relative; background:#000;">
+    <div id="game3dContainer" style="width:100%; height:100%;"></div>
+    <div id="game3dHud" style="position:absolute; top:10px; left:12px; color:#fff; font-size:13px; text-shadow:0 1px 3px #000;">Score: 0</div>
+    <div id="game3dOverlay">
+      <div style="font-size:16px; font-weight:600;">Neon Runner</div>
+      <div style="max-width:300px; color:#ccc;">← → to change lane, Space to jump. Dodge the incoming blocks.</div>
+      <button class="fe-btn" id="game3dStart">Start</button>
+    </div>
+  </div>
+  <div class="resizer"></div>
+</div>
+
+<div class="window hidden" id="win-terminal" style="top:65px; left:230px; width:520px; height:400px;">
+  <div class="titlebar2"><span class="t">Console</span><div class="wbtn min">—</div><div class="wbtn max">▢</div><div class="wbtn close">✕</div></div>
+  <div class="wbody" style="padding:0; display:flex; flex-direction:column; background:#0b0b0b;">
+    <div id="termOutput" style="flex:1; overflow-y:auto; padding:12px; font-family:'Courier New',monospace; font-size:12.5px; color:#cfe8cf; white-space:pre-wrap;"></div>
+    <div style="display:flex; align-items:center; gap:6px; padding:8px 12px; border-top:1px solid var(--border);">
+      <span style="color:#7fca7f; font-family:'Courier New',monospace; font-size:12.5px;">&gt;</span>
+      <input id="termInput" autocomplete="off" style="flex:1; background:transparent; border:none; outline:none; color:#cfe8cf; font-family:'Courier New',monospace; font-size:12.5px;">
+    </div>
+  </div>
+  <div class="resizer"></div>
+</div>
+
+<div class="window hidden" id="win-calc" style="top:70px; left:260px; width:300px; height:420px;">
+  <div class="titlebar2"><span class="t">Calculator</span><div class="wbtn min">—</div><div class="wbtn max">▢</div><div class="wbtn close">✕</div></div>
+  <div class="wbody" style="display:flex; flex-direction:column; gap:10px;">
+    <div id="calcDisplay" style="background:var(--panel2); border:1px solid var(--border); border-radius:6px; padding:14px; text-align:right; font-size:26px; min-height:40px; overflow-x:auto;">0</div>
+    <div id="calcGrid" style="display:grid; grid-template-columns:repeat(4,1fr); gap:6px; flex:1;"></div>
+  </div>
+  <div class="resizer"></div>
+</div>
+
+<div class="window hidden" id="win-notes" style="top:75px; left:290px; width:420px; height:440px;">
+  <div class="titlebar2"><span class="t">Notes</span><div class="wbtn min">—</div><div class="wbtn max">▢</div><div class="wbtn close">✕</div></div>
+  <div class="wbody" style="display:flex; flex-direction:column; gap:10px;">
+    <button class="fe-btn" id="notesAdd" style="align-self:flex-start;">+ New note</button>
+    <div id="notesList" style="display:flex; flex-direction:column; gap:8px; overflow-y:auto;"></div>
+  </div>
+  <div class="resizer"></div>
+</div>
+
+<div class="window hidden" id="win-paint" style="top:60px; left:250px; width:480px; height:460px;">
+  <div class="titlebar2"><span class="t">Paint</span><div class="wbtn min">—</div><div class="wbtn max">▢</div><div class="wbtn close">✕</div></div>
+  <div class="wbody" style="display:flex; flex-direction:column; gap:10px; align-items:center;">
+    <div style="display:flex; gap:8px; align-items:center;">
+      <div class="swatches" id="paintSwatches"></div>
+      <button class="fe-btn" id="paintClear">Clear</button>
+    </div>
+    <canvas id="paintCanvas" width="440" height="320" style="background:#111; border:1px solid var(--border); border-radius:6px; cursor:crosshair; touch-action:none; max-width:100%;"></canvas>
+  </div>
+  <div class="resizer"></div>
+</div>
+
+<div class="window hidden" id="win-aether" style="top:70px; left:270px; width:420px; height:360px;">
+  <div class="titlebar2"><span class="t">Aether</span><div class="wbtn min">—</div><div class="wbtn max">▢</div><div class="wbtn close">✕</div></div>
+  <div class="wbody" style="display:flex; flex-direction:column; align-items:center; gap:16px;">
+    <div style="font-size:12.5px; color:var(--muted); text-align:center;">A tiny instrument. Tap a note, let it ring.</div>
+    <div id="aetherKeys" style="display:flex; gap:8px;"></div>
+  </div>
+  <div class="resizer"></div>
+</div>
+
+<div class="window hidden" id="win-meridian" style="top:70px; left:250px; width:380px; height:420px;">
+  <div class="titlebar2"><span class="t">Meridian</span><div class="wbtn min">—</div><div class="wbtn max">▢</div><div class="wbtn close">✕</div></div>
+  <div class="wbody" style="display:flex; flex-direction:column; gap:10px;">
+    <div style="font-size:12.5px; color:var(--muted);">Time, elsewhere.</div>
+    <div id="meridianList" style="display:flex; flex-direction:column; gap:8px;"></div>
+  </div>
+  <div class="resizer"></div>
+</div>
+
+<div class="window hidden" id="win-ledger" style="top:65px; left:230px; width:440px; height:460px;">
+  <div class="titlebar2"><span class="t">Ledger</span><div class="wbtn min">—</div><div class="wbtn max">▢</div><div class="wbtn close">✕</div></div>
+  <div class="wbody" style="display:flex; flex-direction:column; gap:10px;">
+    <div style="font-size:12.5px; color:var(--muted);">Where it actually goes.</div>
+    <div id="ledgerTotal" style="font-size:22px;">$0.00</div>
+    <div style="display:flex; gap:6px;">
+      <input id="ledgerLabel" placeholder="What for" style="flex:1; background:var(--panel2); border:1px solid var(--border); border-radius:4px; color:var(--fg); font-size:12.5px; padding:6px 8px; font-family:inherit;">
+      <input id="ledgerAmount" type="number" step="0.01" placeholder="Amount" style="width:90px; background:var(--panel2); border:1px solid var(--border); border-radius:4px; color:var(--fg); font-size:12.5px; padding:6px 8px; font-family:inherit;">
+      <button class="fe-btn" id="ledgerAdd">Add</button>
+    </div>
+    <div id="ledgerList" style="display:flex; flex-direction:column; gap:2px; overflow-y:auto; flex:1;"></div>
+  </div>
+  <div class="resizer"></div>
+</div>
+
+<div class="window hidden" id="win-pulse" style="top:75px; left:270px; width:340px; height:360px;">
+  <div class="titlebar2"><span class="t">Pulse</span><div class="wbtn min">—</div><div class="wbtn max">▢</div><div class="wbtn close">✕</div></div>
+  <div class="wbody" style="display:flex; flex-direction:column; align-items:center; gap:16px;">
+    <div style="font-size:12.5px; color:var(--muted); text-align:center;">A small, honest pressure.</div>
+    <div id="pulseMode" style="font-size:12px; color:var(--accent);">Focus</div>
+    <div id="pulseTime" style="font-size:42px; font-variant-numeric:tabular-nums;">25:00</div>
+    <div style="display:flex; gap:8px;">
+      <button class="fe-btn" id="pulseStart">Start</button>
+      <button class="fe-btn" id="pulseReset">Reset</button>
+      <button class="fe-btn" id="pulseSwitch">Switch</button>
+    </div>
+  </div>
+  <div class="resizer"></div>
+</div>
+
+<div class="window hidden" id="win-recall" style="top:60px; left:240px; width:420px; height:440px;">
+  <div class="titlebar2"><span class="t">Recall</span><div class="wbtn min">—</div><div class="wbtn max">▢</div><div class="wbtn close">✕</div></div>
+  <div class="wbody" style="display:flex; flex-direction:column; align-items:center; gap:14px;">
+    <div style="font-size:12.5px; color:var(--muted); text-align:center;">A deck of things worth not forgetting.</div>
+    <div id="recallCard" style="width:100%; min-height:140px; background:var(--panel2); border:1px solid var(--border); border-radius:8px; display:flex; align-items:center; justify-content:center; padding:16px; text-align:center; font-size:15px; cursor:pointer;">Loading…</div>
+    <div style="display:flex; gap:8px;">
+      <button class="fe-btn" id="recallPrev">◀</button>
+      <button class="fe-btn" id="recallFlip">Flip</button>
+      <button class="fe-btn" id="recallNext">▶</button>
+    </div>
+    <button class="fe-btn" id="recallAdd">+ Add card</button>
+  </div>
+  <div class="resizer"></div>
+</div>
+
+<div class="window hidden" id="win-breakout" style="top:70px; left:230px; width:460px; height:440px;">
+  <div class="titlebar2"><span class="t">Breakout</span><div class="wbtn min">—</div><div class="wbtn max">▢</div><div class="wbtn close">✕</div></div>
+  <div class="wbody" style="display:flex; flex-direction:column; align-items:center; gap:10px;">
+    <div style="font-size:12.5px; color:var(--muted);">Arrow keys or mouse to move the paddle.</div>
+    <canvas id="breakoutCanvas" width="400" height="320" style="background:#0c0c0c; border:1px solid var(--border); border-radius:6px;"></canvas>
+    <div id="breakoutStatus" style="font-size:13px;">Score: 0</div>
+  </div>
+  <div class="resizer"></div>
+</div>
+
+<div class="window hidden" id="win-connect4" style="top:65px; left:250px; width:400px; height:480px;">
+  <div class="titlebar2"><span class="t">Connect Four</span><div class="wbtn min">—</div><div class="wbtn max">▢</div><div class="wbtn close">✕</div></div>
+  <div class="wbody" style="display:flex; flex-direction:column; align-items:center; gap:12px;">
+    <div style="font-size:12.5px; color:var(--muted);">You're red. Get four in a row.</div>
+    <div id="c4Board" style="display:grid; grid-template-columns:repeat(7,40px); grid-template-rows:repeat(6,40px); gap:4px; background:#2a3a5a; padding:6px; border-radius:8px;"></div>
+    <div id="c4Status" style="font-size:13px;">Your move</div>
+    <button class="fe-btn" id="c4Reset">New Game</button>
+  </div>
+  <div class="resizer"></div>
+</div>
+
+<div class="window hidden" id="win-mine" style="top:60px; left:260px; width:400px; height:480px;">
+  <div class="titlebar2"><span class="t">Minesweeper</span><div class="wbtn min">—</div><div class="wbtn max">▢</div><div class="wbtn close">✕</div></div>
+  <div class="wbody" style="display:flex; flex-direction:column; align-items:center; gap:10px;">
+    <div style="font-size:12.5px; color:var(--muted);">Left click to reveal, right click to flag.</div>
+    <div id="mineStatus" style="font-size:13px;">Mines: 10</div>
+    <div id="mineBoard" style="display:grid; grid-template-columns:repeat(9,32px); grid-template-rows:repeat(9,32px); gap:2px;"></div>
+    <button class="fe-btn" id="mineReset">New Game</button>
+  </div>
+  <div class="resizer"></div>
+</div>
+
 <div class="window hidden" id="win-settings" style="top:50px; left:240px; width:560px; height:420px;">
   <div class="titlebar2"><span class="t">Settings</span><div class="wbtn min">—</div><div class="wbtn max">▢</div><div class="wbtn close">✕</div></div>
   <div class="wbody">
     <div class="set-layout">
       <div class="set-side">
         <div class="item active" data-set="personal">Personalization</div>
+        <div class="item" data-set="display">Display</div>
+        <div class="item" data-set="sound">Sound</div>
+        <div class="item" data-set="access">Accessibility</div>
+        <div class="item" data-set="account">Account</div>
         <div class="item" data-set="about">About</div>
         <div class="item" data-set="reset">Reset</div>
       </div>
@@ -337,6 +542,10 @@ body{
     <div class="sm-app" data-open="win-store"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M4 8l1-4h14l1 4M4 8h16M4 8v11a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V8M9 12a3 3 0 0 0 6 0" fill="none" stroke="#a0a0a0" stroke-width="1.5"/></svg></div>App Store</div>
     <div class="sm-app" data-open="win-settings"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zm8.4 4a7.6 7.6 0 0 0-.15-1.5l2.1-1.6-2-3.5-2.5 1a8 8 0 0 0-2.6-1.5L14.7 2H9.3l-.55 2.9a8 8 0 0 0-2.6 1.5l-2.5-1-2 3.5 2.1 1.6A7.6 7.6 0 0 0 3.6 12c0 .5.05 1 .15 1.5l-2.1 1.6 2 3.5 2.5-1a8 8 0 0 0 2.6 1.5l.55 2.9h5.4l.55-2.9a8 8 0 0 0 2.6-1.5l2.5 1 2-3.5-2.1-1.6c.1-.5.15-1 .15-1.5z" fill="#a0a0a0"/></svg></div>Settings</div>
   </div>
+  <div id="installedAppsSection" style="display:none;">
+    <div class="sm-header">Apps</div>
+    <div class="sm-apps" id="installedAppsList"></div>
+  </div>
   <div id="installedGamesSection" style="display:none;">
     <div class="sm-header">Games</div>
     <div class="sm-apps" id="installedGamesList"></div>
@@ -347,7 +556,10 @@ body{
 <!-- Taskbar -->
 <div id="taskbar">
   <div id="startBtn"><div class="winlogo"><span></span><span></span><span></span><span></span></div></div>
-  <div id="searchbar">Search</div>
+  <div id="searchWrap">
+    <input id="searchbar" placeholder="Search apps, games, files..." autocomplete="off">
+    <div id="searchResults"></div>
+  </div>
   <div class="taskicon" data-open="win-fe" title="File Explorer"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M2 5a1 1 0 0 1 1-1h5l2 2h11a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5z" fill="#cfcfcf"/></svg></div>
   <div class="taskicon" data-open="win-tube" title="TubeYou" style="font-size:18px;">▶</div>
   <div class="taskicon" data-open="win-browser" title="Browser"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="#cfcfcf" stroke-width="1.6"/><path d="M3 12h18M12 3c2.5 2.5 4 6 4 9s-1.5 6.5-4 9c-2.5-2.5-4-6-4-9s1.5-6.5 4-9z" fill="none" stroke="#cfcfcf" stroke-width="1.6"/></svg></div>
@@ -356,36 +568,160 @@ body{
   <div id="clock"></div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
   const $ = id => document.getElementById(id);
   function load(key, fb){ try{ const v = localStorage.getItem(key); return v ? JSON.parse(v) : fb; }catch(e){ return fb; } }
   function save(key, val){ try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){} }
 
-  // ---- Starfield wallpaper ----
-  const starsEl = $('stars');
-  for(let i=0;i<90;i++){
-    const s = document.createElement('div');
-    s.className='star';
-    const size = Math.random()*2+1;
-    s.style.width=size+'px'; s.style.height=size+'px';
-    s.style.left=(Math.random()*100)+'%'; s.style.top=(Math.random()*100)+'%';
-    s.style.animationDelay=(Math.random()*3.5)+'s';
-    starsEl.appendChild(s);
+  // ---- Sound engine (simple WebAudio beeps, gated by Settings > Sound) ----
+  let audioCtx=null;
+  function playBeep(freq, dur, type){
+    if(!load('winstek_sound', true)) return;
+    try{
+      if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+      const vol=(load('winstek_volume', 60))/100;
+      const osc=audioCtx.createOscillator(), gain=audioCtx.createGain();
+      osc.type=type||'sine'; osc.frequency.value=freq||440;
+      gain.gain.value=0.15*vol;
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.start();
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime+(dur||0.12));
+      osc.stop(audioCtx.currentTime+(dur||0.12));
+    }catch(e){}
   }
+  document.addEventListener('click', e=>{
+    if(e.target.closest('.fe-btn, .taskicon, #startBtn, .sm-app, .wbtn, .wall-swatch, .swatch')) playBeep(520,0.06,'square');
+  });
 
-  // ---- Boot sequence ----
-  const bootLinesText = ['Winstek 1 BIOS v9.55','Checking system integrity... OK','Initializing memory... OK',
-    'Detecting storage devices... OK','Running hardware diagnostics... OK','Loading kernel modules...',
-    'Mounting file systems...','Starting Winstek services...','Starting network stack... OK',
-    'Starting user session manager...','Preparing desktop environment...'];
+  // ---- Wallpaper themes ----
+  const desktopEl = $('desktop');
+  const wallpaperThemes=[
+    {name:'Aurora', bg:'radial-gradient(circle at 15% 20%, rgba(138,180,255,0.35), transparent 40%), radial-gradient(circle at 85% 15%, rgba(199,138,224,0.30), transparent 45%), radial-gradient(circle at 50% 100%, rgba(127,202,127,0.18), transparent 50%), linear-gradient(160deg, #05060f 0%, #0c1024 35%, #1a1140 65%, #2b1650 100%)', star:'#ffffff', accent:'#8ab4ff'},
+    {name:'Sunset', bg:'radial-gradient(circle at 20% 15%, rgba(255,160,120,0.35), transparent 45%), radial-gradient(circle at 80% 20%, rgba(255,90,120,0.30), transparent 45%), radial-gradient(circle at 50% 100%, rgba(255,200,80,0.20), transparent 55%), linear-gradient(160deg, #1a0a12 0%, #401428 35%, #6e1f2e 65%, #9c3b26 100%)', star:'#ffe3c9', accent:'#ff9d5c'},
+    {name:'Ocean', bg:'radial-gradient(circle at 15% 20%, rgba(80,200,255,0.30), transparent 45%), radial-gradient(circle at 85% 10%, rgba(60,255,220,0.25), transparent 45%), radial-gradient(circle at 50% 100%, rgba(40,120,200,0.25), transparent 55%), linear-gradient(160deg, #010b14 0%, #052435 35%, #0a3f52 65%, #0e5a63 100%)', star:'#cdf7ff', accent:'#4fd6e0'},
+    {name:'Forest', bg:'radial-gradient(circle at 20% 15%, rgba(140,220,130,0.30), transparent 45%), radial-gradient(circle at 80% 20%, rgba(90,180,90,0.25), transparent 45%), radial-gradient(circle at 50% 100%, rgba(210,200,90,0.18), transparent 55%), linear-gradient(160deg, #050f07 0%, #0c2010 35%, #16341a 65%, #294d1f 100%)', star:'#e6ffda', accent:'#7fca7f'},
+    {name:'Mono', bg:'radial-gradient(circle at 20% 15%, rgba(255,255,255,0.12), transparent 45%), radial-gradient(circle at 80% 20%, rgba(255,255,255,0.10), transparent 45%), linear-gradient(160deg, #050505 0%, #101010 35%, #1c1c1c 65%, #2a2a2a 100%)', star:'#ffffff', accent:'#cfcfcf'},
+    {name:'Candy', bg:'radial-gradient(circle at 20% 15%, rgba(255,130,200,0.30), transparent 45%), radial-gradient(circle at 80% 20%, rgba(150,130,255,0.28), transparent 45%), radial-gradient(circle at 50% 100%, rgba(255,210,120,0.18), transparent 55%), linear-gradient(160deg, #140a1f 0%, #2a1140 35%, #431a5c 65%, #6a1f6f 100%)', star:'#ffe0f5', accent:'#e08ae0'}
+  ];
+  const starsEl = $('stars');
+  function buildStars(color){
+    starsEl.innerHTML='';
+    for(let i=0;i<90;i++){
+      const s = document.createElement('div');
+      s.className='star';
+      const size = Math.random()*2+1;
+      s.style.width=size+'px'; s.style.height=size+'px'; s.style.background=color;
+      s.style.left=(Math.random()*100)+'%'; s.style.top=(Math.random()*100)+'%';
+      s.style.animationDelay=(Math.random()*3.5)+'s';
+      starsEl.appendChild(s);
+    }
+  }
+  function applyWallpaper(idx){
+    const t=wallpaperThemes[idx]||wallpaperThemes[0];
+    desktopEl.style.background=t.bg;
+    buildStars(t.star);
+    document.documentElement.style.setProperty('--accent', t.accent);
+    save('winstek_wallpaper', idx);
+  }
+  applyWallpaper(load('winstek_wallpaper', 0));
+
+  function applyAccessibility(){
+    document.body.classList.toggle('contrast', load('winstek_contrast', false));
+    document.body.classList.toggle('bigcursor', load('winstek_bigcursor', false));
+    document.documentElement.style.fontSize = load('winstek_textsize', 100)+'%';
+  }
+  applyAccessibility();
+
+  // ---- Boot sequence (immersive BIOS, variable pacing) ----
   const bootLinesEl = $('bootLines');
-  bootLinesText.forEach((line,i)=>{ const d=document.createElement('div'); d.textContent=line; d.style.animationDelay=(i*450)+'ms'; bootLinesEl.appendChild(d); });
+  const bootSeq = [
+    {t:'Winstek BIOS (C) 2013-2026 Winstek Technologies Inc.', d:140},
+    {t:'BIOS Version 9.55.221 — Build 40291', d:60},
+    {t:'CPU: Winstek Core X9 @ 3.80GHz', d:70},
+    {t:'Cache: L1 512K, L2 4M, L3 16M', d:90},
+    {t:'', d:180},
+    {t:'Press DEL to enter setup, ESC to skip', d:520},
+    {t:'', d:260},
+    {t:'Initializing memory...', d:160},
+    {t:'  testing 65536K   OK', d:35},
+    {t:'  testing 131072K  OK', d:35},
+    {t:'  testing 262144K  OK', d:35},
+    {t:'  testing 524288K  OK', d:35},
+    {t:'  testing 1048576K OK', d:35},
+    {t:'  testing 2097152K OK', d:35},
+    {t:'  testing 4194304K OK', d:35},
+    {t:'  testing 8388608K OK', d:35},
+    {t:'Memory OK: 16384MB installed', d:240},
+    {t:'', d:160},
+    {t:'Detecting storage devices...', d:210},
+    {t:'  Primary Master:    WNSTK-SSD1 512GB', d:190},
+    {t:'  Primary Slave:     (none)', d:130},
+    {t:'  Secondary Master:  WNSTK-HDD2 2TB', d:190},
+    {t:'  Secondary Slave:   WNSTK-RMV3 16GB', d:420},
+    {t:'', d:220},
+    {t:'Running hardware diagnostics...', d:170},
+    {t:'  CPU .......................... PASS', d:75},
+    {t:'  RAM .......................... PASS', d:75},
+    {t:'  Storage controller ........... PASS', d:75},
+    {t:'  Network adapter .............. PASS', d:75},
+    {t:'  Audio controller ............. PASS', d:75},
+    {t:'  USB controllers (4) .......... PASS', d:75},
+    {t:'  GPU: Winstek Vector 9800 ..... PASS', d:430},
+    {t:'', d:260},
+    {t:'Verifying system integrity...', d:190},
+    {t:'  checksum 0x9F2A1C4E  valid', d:55},
+    {t:'  checksum 0x11B70D82  valid', d:55},
+    {t:'  checksum 0x7734AACF  valid', d:55},
+    {t:'  checksum 0xC0FFEE21  valid', d:520},
+    {t:'', d:300},
+    {t:'Loading kernel...', d:650},
+    {t:'Loading kernel modules...', d:200},
+    {t:'  vfs.ko ...... loaded', d:60},
+    {t:'  net.ko ...... loaded', d:60},
+    {t:'  gpu.ko ...... loaded', d:60},
+    {t:'  audio.ko .... loaded', d:60},
+    {t:'  usbhid.ko ... loaded', d:380},
+    {t:'', d:220},
+    {t:'Mounting file systems...', d:230},
+    {t:'  /              mounted (ro)', d:90},
+    {t:'  /home          mounted (rw)', d:90},
+    {t:'  /var           mounted (rw)', d:90},
+    {t:'  /tmp           mounted (tmpfs)', d:400},
+    {t:'', d:200},
+    {t:'Starting Winstek services...', d:260},
+    {t:'  winlogond ............ started', d:130},
+    {t:'  netmgr ................ started', d:130},
+    {t:'  audiod ................. started', d:130},
+    {t:'  compositord ............. started', d:130},
+    {t:'  updateagent .............. started', d:600},
+    {t:'', d:220},
+    {t:'Starting network stack...', d:310},
+    {t:'  acquiring address via DHCP...', d:520},
+    {t:'  bound 10.14.2.87 / 255.255.255.0', d:420},
+    {t:'', d:220},
+    {t:'Starting user session manager...', d:380},
+    {t:'Preparing desktop environment...', d:600}
+  ];
+  let bootDoneMs = 0;
+  bootSeq.reduce((acc,line)=>{
+    setTimeout(()=>{
+      const d=document.createElement('div');
+      d.textContent=line.t||'\u00A0';
+      bootLinesEl.appendChild(d);
+      bootLinesEl.scrollTop=bootLinesEl.scrollHeight;
+    }, acc);
+    return acc+line.d;
+  },0);
+  bootSeq.forEach(line=>{ bootDoneMs+=line.d; });
   function fadeOut(el,cb){ el.style.opacity='0'; setTimeout(()=>{ el.style.display='none'; if(cb) cb(); },500); }
   function fadeIn(el){ el.style.display='flex'; el.style.opacity='0'; requestAnimationFrame(()=>{ el.style.opacity='1'; }); }
-  setTimeout(()=>{ fadeOut($('bootScreen'), ()=>{ fadeIn($('logoScreen')); setTimeout(()=>{ fadeOut($('logoScreen')); }, 2200); }); }, bootLinesText.length*450+1200);
+  setTimeout(()=>{ fadeOut($('bootScreen'), ()=>{ fadeIn($('logoScreen')); setTimeout(()=>{ fadeOut($('logoScreen')); }, 2200); }); }, bootDoneMs+500);
 
-  function tick(){ const d=new Date(); const hh=String(d.getHours()).padStart(2,'0'), mm=String(d.getMinutes()).padStart(2,'0'); $('clock').innerHTML=hh+':'+mm+'<br>'+d.toLocaleDateString(); }
+  function tick(){ const d=new Date(); const is24=load('winstek_clock24', true); let hh, suffix='';
+    if(is24){ hh=String(d.getHours()).padStart(2,'0'); } else { let h12=d.getHours()%12; if(h12===0) h12=12; hh=String(h12); suffix=d.getHours()>=12?' PM':' AM'; }
+    const mm=String(d.getMinutes()).padStart(2,'0'); $('clock').innerHTML=hh+':'+mm+suffix+'<br>'+d.toLocaleDateString(); }
   tick(); setInterval(tick,15000);
 
   // ---- Start menu ----
@@ -496,18 +832,52 @@ body{
   // ---- Settings ----
   function renderSettings(tab){
     const main=$('setMain');
+    const currentTheme=load('winstek_wallpaper', 0);
     if(tab==='personal'){
       main.innerHTML='<h3>Personalization</h3>'
-        +'<div class="set-row"><span>Desktop background</span><span style="color:var(--muted);">Aurora (built-in)</span></div>'
+        +'<div class="set-row" style="align-items:flex-start;"><span>Wallpaper</span><div style="display:flex; gap:8px; flex-wrap:wrap; max-width:340px;">'
+        +wallpaperThemes.map((t,i)=>'<div title="'+t.name+'" class="wall-swatch'+(i===currentTheme?' active':'')+'" data-i="'+i+'" style="background:'+t.bg+';"></div>').join('')
+        +'</div></div>'
         +'<div class="set-row"><span>Show stars</span><button class="set-btn" id="starsToggle">Toggle</button></div>';
+      document.querySelectorAll('.wall-swatch').forEach(sw=>{ sw.onclick=()=>{ applyWallpaper(parseInt(sw.dataset.i)); renderSettings('personal'); }; });
       $('starsToggle').onclick=()=>{ starsEl.style.display = starsEl.style.display==='none' ? 'block' : 'none'; };
+    } else if(tab==='display'){
+      const reduced=load('winstek_reducedmotion', false);
+      main.innerHTML='<h3>Display</h3>'
+        +'<div class="set-row"><span>Clock format</span><button class="set-btn" id="clockFmtBtn">'+(load('winstek_clock24',true)?'24-hour':'12-hour')+'</button></div>'
+        +'<div class="set-row"><span>Reduce motion (games)</span><button class="set-btn" id="reducedBtn">'+(reduced?'On':'Off')+'</button></div>'
+        +'<div class="set-row"><span>Window opacity</span><input type="range" id="opacityRange" min="80" max="100" value="'+load('winstek_panelop',100)+'"></div>';
+      $('clockFmtBtn').onclick=()=>{ save('winstek_clock24', !load('winstek_clock24',true)); tick(); renderSettings('display'); };
+      $('reducedBtn').onclick=()=>{ save('winstek_reducedmotion', !reduced); renderSettings('display'); };
+      $('opacityRange').oninput=e=>{ save('winstek_panelop', e.target.value); document.documentElement.style.setProperty('--panel-op', (e.target.value/100)); };
+    } else if(tab==='sound'){
+      main.innerHTML='<h3>Sound</h3>'
+        +'<div class="set-row"><span>UI sounds</span><button class="set-btn" id="soundToggle">'+(load('winstek_sound',true)?'On':'Off')+'</button></div>'
+        +'<div class="set-row"><span>Volume</span><input type="range" id="volRange" min="0" max="100" value="'+load('winstek_volume',60)+'"></div>'
+        +'<div class="set-row"><span>Test sound</span><button class="set-btn" id="testSound">Play</button></div>';
+      $('soundToggle').onclick=()=>{ save('winstek_sound', !load('winstek_sound',true)); renderSettings('sound'); };
+      $('volRange').oninput=e=>save('winstek_volume', e.target.value);
+      $('testSound').onclick=()=>playBeep(660,0.18,'sine');
+    } else if(tab==='access'){
+      main.innerHTML='<h3>Accessibility</h3>'
+        +'<div class="set-row"><span>High contrast</span><button class="set-btn" id="contrastToggle">'+(load('winstek_contrast',false)?'On':'Off')+'</button></div>'
+        +'<div class="set-row"><span>Large cursor</span><button class="set-btn" id="cursorToggle">'+(load('winstek_bigcursor',false)?'On':'Off')+'</button></div>'
+        +'<div class="set-row"><span>UI text size</span><input type="range" id="textRange" min="90" max="130" value="'+load('winstek_textsize',100)+'"></div>';
+      $('contrastToggle').onclick=()=>{ const v=!load('winstek_contrast',false); save('winstek_contrast', v); applyAccessibility(); renderSettings('access'); };
+      $('cursorToggle').onclick=()=>{ const v=!load('winstek_bigcursor',false); save('winstek_bigcursor', v); applyAccessibility(); renderSettings('access'); };
+      $('textRange').oninput=e=>{ save('winstek_textsize', e.target.value); applyAccessibility(); };
+    } else if(tab==='account'){
+      main.innerHTML='<h3>Account</h3>'
+        +'<div class="set-row"><span>Display name</span><input id="nameInput" value="'+load('winstek_username','User')+'" style="background:var(--panel); border:1px solid var(--border); color:var(--fg); border-radius:4px; padding:5px 8px; font-size:12.5px; width:150px;"></div>'
+        +'<div class="set-row"><span>Avatar color</span><div class="swatches">'
+        +['#8ab4ff','#e05a5a','#7fca7f','#e0c15a','#c78ae0'].map(c=>'<div class="swatch" data-c="'+c+'" style="background:'+c+';"></div>').join('')+'</div></div>';
+      $('nameInput').oninput=e=>save('winstek_username', e.target.value);
+      document.querySelectorAll('#setMain .swatch').forEach(sw=>sw.onclick=()=>save('winstek_avatar', sw.dataset.c));
     } else if(tab==='about'){
-      main.innerHTML='<h3>About</h3><div class="set-row"><span>Version</span><span>Winstek 1.0</span></div><div class="set-row"><span>Theme</span><span>Aurora / Dark</span></div>';
+      main.innerHTML='<h3>About</h3><div class="set-row"><span>Version</span><span>Winstek 1.0</span></div><div class="set-row"><span>Theme</span><span>'+wallpaperThemes[currentTheme].name+'</span></div>';
     } else if(tab==='reset'){
-      main.innerHTML='<h3>Reset</h3><p style="color:var(--muted); font-size:12.5px; margin-bottom:12px;">Clears saved files, desktop items, folder contents, game progress and installed apps stored in this browser.</p><button class="set-btn" id="resetBtn">Reset Winstek</button>';
-      $('resetBtn').onclick=()=>{ if(confirm('Reset all Winstek data? The page will reload.')){
-        ['winstek_downloads','winstek_desktopItems','winstek_installed','winstek_cookie'].forEach(k=>save(k,undefined));
-        localStorage.clear(); location.reload(); } };
+      main.innerHTML='<h3>Reset</h3><p style="color:var(--muted); font-size:12.5px; margin-bottom:12px;">Clears saved files, desktop items, folder contents, game progress, wallpaper choice and installed apps stored in this browser.</p><button class="set-btn" id="resetBtn">Reset Winstek</button>';
+      $('resetBtn').onclick=()=>{ if(confirm('Reset all Winstek data? The page will reload.')){ localStorage.clear(); location.reload(); } };
     }
   }
   document.querySelectorAll('#win-settings .set-side .item').forEach(item=>{ item.onclick=()=>{
@@ -656,16 +1026,42 @@ body{
     memory:'<svg width="34" height="34" viewBox="0 0 24 24"><rect x="2" y="3" width="9" height="9" fill="#565656"/><rect x="13" y="3" width="9" height="9" fill="#8ab4ff"/><rect x="2" y="14" width="9" height="9" fill="#8ab4ff"/><rect x="13" y="14" width="9" height="9" fill="#565656"/></svg>',
     ttt:'<svg width="34" height="34" viewBox="0 0 24 24"><rect x="1" y="1" width="22" height="22" fill="none" stroke="#cfcfcf" stroke-width="1.5"/><line x1="8" y1="1" x2="8" y2="23" stroke="#cfcfcf"/><line x1="16" y1="1" x2="16" y2="23" stroke="#cfcfcf"/><line x1="1" y1="8" x2="23" y2="8" stroke="#cfcfcf"/><line x1="1" y1="16" x2="23" y2="16" stroke="#cfcfcf"/><text x="3" y="7" font-size="7" fill="#8ab4ff">X</text><text x="18" y="15" font-size="7" fill="#e05a5a">O</text></svg>',
     g2048:'<svg width="34" height="34" viewBox="0 0 24 24"><rect x="1" y="1" width="22" height="22" rx="3" fill="#3a3a3a"/><text x="5" y="16" font-size="10" fill="#e0c15a" font-weight="bold">2048</text></svg>',
-    whack:'<svg width="34" height="34" viewBox="0 0 24 24"><circle cx="12" cy="14" r="8" fill="#2a2a2a"/><circle cx="12" cy="9" r="5" fill="#7a5230"/></svg>'
+    whack:'<svg width="34" height="34" viewBox="0 0 24 24"><circle cx="12" cy="14" r="8" fill="#2a2a2a"/><circle cx="12" cy="9" r="5" fill="#7a5230"/></svg>',
+    game3d:'<svg width="34" height="34" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" fill="#8ab4ff" transform="skewX(-10)"/><rect x="13" y="9" width="7" height="7" fill="#e05a5a" transform="skewX(-10)"/><rect x="7" y="15" width="7" height="7" fill="#7fca7f" transform="skewX(-10)"/></svg>',
+    terminal:'<svg width="34" height="34" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="18" rx="2" fill="#1c1c1c" stroke="#7fca7f" stroke-width="1"/><text x="5" y="15" font-family="monospace" font-size="9" fill="#7fca7f">&gt;_</text></svg>',
+    calc:'<svg width="34" height="34" viewBox="0 0 24 24"><rect x="3" y="2" width="18" height="20" rx="2" fill="#2a2a2a" stroke="#cfcfcf" stroke-width="1"/><rect x="6" y="5" width="12" height="4" fill="#8ab4ff"/><circle cx="7.5" cy="13" r="1.4" fill="#cfcfcf"/><circle cx="12" cy="13" r="1.4" fill="#cfcfcf"/><circle cx="16.5" cy="13" r="1.4" fill="#cfcfcf"/><circle cx="7.5" cy="17.5" r="1.4" fill="#cfcfcf"/><circle cx="12" cy="17.5" r="1.4" fill="#cfcfcf"/><circle cx="16.5" cy="17.5" r="1.4" fill="#e0c15a"/></svg>',
+    notes:'<svg width="34" height="34" viewBox="0 0 24 24"><path d="M4 3h16v13l-5 5H4V3z" fill="#e0c15a"/><path d="M15 21v-5h5" fill="none" stroke="#a88a2a" stroke-width="1"/></svg>',
+    paint:'<svg width="34" height="34" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 3 19.5c1-.3 1-1.6-.1-1.9-1-.3-1.6-1.3-1-2.2.5-.8 1.6-.8 2.6-.8A5.5 5.5 0 0 0 22 11 9 9 0 0 0 12 2z" fill="#cfcfcf"/><circle cx="8" cy="9" r="1.6" fill="#e05a5a"/><circle cx="12" cy="7" r="1.6" fill="#7fca7f"/><circle cx="16" cy="9" r="1.6" fill="#8ab4ff"/><circle cx="8" cy="14" r="1.6" fill="#e0c15a"/></svg>',
+    aether:'<svg width="34" height="34" viewBox="0 0 24 24"><path d="M9 4v11a3 3 0 1 1-1.5-2.6V6.5L18 5v9a3 3 0 1 1-1.5-2.6V6L9 4z" fill="#c78ae0"/></svg>',
+    meridian:'<svg width="34" height="34" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="#8ab4ff" stroke-width="1.6"/><path d="M12 7v5l3 2" fill="none" stroke="#8ab4ff" stroke-width="1.6" stroke-linecap="round"/></svg>',
+    ledger:'<svg width="34" height="34" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="1.5" fill="#2a2a2a" stroke="#7fca7f" stroke-width="1"/><text x="8" y="15" font-size="10" fill="#7fca7f" font-weight="bold">$</text></svg>',
+    pulse:'<svg width="34" height="34" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="#e05a5a" stroke-width="1.6"/><path d="M6 12h3l1.5-4 3 8 1.5-4h3" fill="none" stroke="#e05a5a" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    recall:'<svg width="34" height="34" viewBox="0 0 24 24"><rect x="5" y="6" width="14" height="10" rx="1.5" fill="#3a3a3a" stroke="#cfcfcf" stroke-width="1"/><rect x="3" y="3" width="14" height="10" rx="1.5" fill="#e0c15a"/></svg>',
+    breakout:'<svg width="34" height="34" viewBox="0 0 24 24"><rect x="2" y="4" width="9" height="4" fill="#e05a5a"/><rect x="13" y="4" width="9" height="4" fill="#e0c15a"/><rect x="2" y="10" width="9" height="4" fill="#7fca7f"/><rect x="13" y="10" width="9" height="4" fill="#8ab4ff"/><rect x="9" y="18" width="6" height="2.5" fill="#cfcfcf"/><circle cx="12" cy="15" r="1.6" fill="#fff"/></svg>',
+    connect4:'<svg width="34" height="34" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2" fill="#2a3a5a"/><circle cx="7" cy="7" r="2.4" fill="#e05a5a"/><circle cx="12" cy="7" r="2.4" fill="#e0c15a"/><circle cx="17" cy="7" r="2.4" fill="#1a2540"/><circle cx="7" cy="17" r="2.4" fill="#e0c15a"/><circle cx="12" cy="17" r="2.4" fill="#e05a5a"/><circle cx="17" cy="17" r="2.4" fill="#e05a5a"/></svg>',
+    mine:'<svg width="34" height="34" viewBox="0 0 24 24"><circle cx="12" cy="14" r="7" fill="#2a2a2a"/><rect x="11" y="3" width="2" height="4" fill="#cfcfcf"/><circle cx="12" cy="3" r="1.6" fill="#e05a5a"/></svg>'
   };
   const storeApps=[
-    {id:'pong', win:'win-pong', name:'Pong', desc:'Classic two-paddle arcade game. First to 5 points wins.'},
-    {id:'cookie', win:'win-cookie', name:'Cookie Clicker', desc:'Click for cookies, buy upgrades, and watch your rate climb on its own.'},
-    {id:'snake', win:'win-snake', name:'Snake', desc:'Grow as long as you can without hitting a wall or yourself.'},
-    {id:'memory', win:'win-memory', name:'Memory Match', desc:'Flip cards, find every pair, in as few moves as possible.'},
-    {id:'ttt', win:'win-ttt', name:'Tic Tac Toe', desc:'Play against a simple computer opponent.'},
-    {id:'g2048', win:'win-2048', name:'2048', desc:'Slide and merge numbered tiles to reach 2048.'},
-    {id:'whack', win:'win-whack', name:'Whack-a-Mole', desc:'Click the moles before they duck back down. 20 second rounds.'}
+    {id:'terminal', win:'win-terminal', kind:'app', name:'Console', desc:'A command line into Winstek itself. Type "help" and see what it knows about you and itself.'},
+    {id:'calc', win:'win-calc', kind:'app', name:'Calculator', desc:'The one tool every OS has carried since the beginning. Still just doing the math.'},
+    {id:'notes', win:'win-notes', kind:'app', name:'Notes', desc:'A quiet place to leave yourself something to remember. Saved automatically, for no one but you.'},
+    {id:'paint', win:'win-paint', kind:'app', name:'Paint', desc:'A blank canvas and nothing else. No layers, no undo — just make something.'},
+    {id:'aether', win:'win-aether', kind:'app', name:'Aether', desc:'A tiny instrument for two minutes of noise that isn\'t work. Tap a key, let it ring.'},
+    {id:'meridian', win:'win-meridian', kind:'app', name:'Meridian', desc:'Time, elsewhere. A handful of clocks for the cities you think about.'},
+    {id:'ledger', win:'win-ledger', kind:'app', name:'Ledger', desc:'Where it actually goes. A plain running total of what comes in and out.'},
+    {id:'pulse', win:'win-pulse', kind:'app', name:'Pulse', desc:'A small, honest pressure. 25 minutes on, 5 minutes off, repeat.'},
+    {id:'recall', win:'win-recall', kind:'app', name:'Recall', desc:'A deck of things worth not forgetting. Flip, add your own, keep going.'},
+    {id:'pong', win:'win-pong', kind:'game', name:'Pong', desc:'Classic two-paddle arcade game. First to 5 points wins.'},
+    {id:'cookie', win:'win-cookie', kind:'game', name:'Cookie Clicker', desc:'Click for cookies, buy upgrades, and watch your rate climb on its own.'},
+    {id:'snake', win:'win-snake', kind:'game', name:'Snake', desc:'Grow as long as you can without hitting a wall or yourself.'},
+    {id:'memory', win:'win-memory', kind:'game', name:'Memory Match', desc:'Flip cards, find every pair, in as few moves as possible.'},
+    {id:'ttt', win:'win-ttt', kind:'game', name:'Tic Tac Toe', desc:'Play against a simple computer opponent.'},
+    {id:'g2048', win:'win-2048', kind:'game', name:'2048', desc:'Slide and merge numbered tiles to reach 2048.'},
+    {id:'whack', win:'win-whack', kind:'game', name:'Whack-a-Mole', desc:'Click the moles before they duck back down. 20 second rounds.'},
+    {id:'game3d', win:'win-3d', kind:'game', name:'Neon Runner (3D)', desc:'A 3D endless runner — dodge glowing obstacles down a neon corridor.'},
+    {id:'breakout', win:'win-breakout', kind:'game', name:'Breakout', desc:'Clear every brick without letting the ball fall. Mouse or arrow keys.'},
+    {id:'connect4', win:'win-connect4', kind:'game', name:'Connect Four', desc:'Drop pieces, get four in a row before the computer does.'},
+    {id:'mine', win:'win-mine', kind:'game', name:'Minesweeper', desc:'Reveal every safe tile. Right-click to flag what you suspect.'}
   ];
   let installed=load('winstek_installed', {});
   const storeGrid=$('storeGrid'); const tileEls={};
@@ -681,13 +1077,108 @@ body{
     const fill=document.getElementById('fill-'+app.id); let pct=0;
     const timer=setInterval(()=>{ pct+=4+Math.random()*6; if(pct>=100){ pct=100; clearInterval(timer); installed[app.id]=true; save('winstek_installed', installed); renderStoreTile(app); renderInstalledGames(); } fill.style.width=pct+'%'; },140);
   }
-  storeApps.forEach(app=>{ const tile=document.createElement('div'); tile.style.cssText='background:var(--panel2); border:1px solid var(--border); border-radius:8px; padding:14px; display:flex; flex-direction:column; gap:8px;'; storeGrid.appendChild(tile); tileEls[app.id]=tile; renderStoreTile(app); });
+  storeApps.forEach(app=>{ const tile=document.createElement('div'); tile.dataset.kind=app.kind||'game'; tile.style.cssText='background:var(--panel2); border:1px solid var(--border); border-radius:8px; padding:14px; display:flex; flex-direction:column; gap:8px;'; storeGrid.appendChild(tile); tileEls[app.id]=tile; renderStoreTile(app); });
+  let storeTab='app';
+  function applyStoreTab(){
+    document.querySelectorAll('.store-tab').forEach(b=>b.classList.toggle('active', b.dataset.kind===storeTab));
+    storeApps.forEach(app=>{ tileEls[app.id].style.display=(app.kind||'game')===storeTab ? 'flex' : 'none'; });
+  }
+  document.querySelectorAll('.store-tab').forEach(b=>{ b.onclick=()=>{ storeTab=b.dataset.kind; applyStoreTab(); }; });
+  applyStoreTab();
   function renderInstalledGames(){
-    const anyInstalled=storeApps.some(a=>installed[a.id]); $('installedGamesSection').style.display=anyInstalled?'block':'none';
-    const list=$('installedGamesList'); list.innerHTML='';
-    storeApps.forEach(app=>{ if(!installed[app.id]) return; const row=document.createElement('div'); row.className='sm-app'; row.innerHTML='<div class="ico">'+icons[app.id]+'</div>'+app.name; row.onclick=()=>openWin(app.win); list.appendChild(row); });
+    const anyApp=storeApps.some(a=>installed[a.id] && (a.kind||'game')==='app'); $('installedAppsSection').style.display=anyApp?'block':'none';
+    const anyGame=storeApps.some(a=>installed[a.id] && (a.kind||'game')==='game'); $('installedGamesSection').style.display=anyGame?'block':'none';
+    const appList=$('installedAppsList'), gameList=$('installedGamesList'); appList.innerHTML=''; gameList.innerHTML='';
+    storeApps.forEach(app=>{ if(!installed[app.id]) return; const row=document.createElement('div'); row.className='sm-app'; row.innerHTML='<div class="ico">'+icons[app.id]+'</div>'+app.name; row.onclick=()=>openWin(app.win);
+      ((app.kind||'game')==='app' ? appList : gameList).appendChild(row); });
   }
   renderInstalledGames();
+
+  // ---- Console ----
+  const termOutput=$('termOutput'), termInput=$('termInput');
+  function termPrint(text){ const d=document.createElement('div'); d.textContent=text; termOutput.appendChild(d); termOutput.scrollTop=termOutput.scrollHeight; }
+  termPrint('Winstek Console — type "help" to see what it knows.');
+  termInput.addEventListener('keydown', e=>{
+    if(e.key!=='Enter') return;
+    const raw=termInput.value; termInput.value='';
+    if(!raw.trim()) return;
+    termPrint('> '+raw);
+    const [cmd, ...args]=raw.trim().split(/\s+/); const arg=args.join(' ');
+    if(cmd==='help') termPrint('help, date, whoami, echo <text>, winfetch, theme <name>, clear');
+    else if(cmd==='date') termPrint(new Date().toString());
+    else if(cmd==='whoami') termPrint(load('winstek_username','User'));
+    else if(cmd==='echo') termPrint(arg);
+    else if(cmd==='clear') termOutput.innerHTML='';
+    else if(cmd==='winfetch'){ termPrint('Winstek 1'); termPrint('Uptime: '+Math.floor(performance.now()/1000)+'s'); termPrint('Theme: '+wallpaperThemes[load('winstek_wallpaper',0)].name); termPrint('Installed: '+Object.keys(installed).length+' item(s)'); }
+    else if(cmd==='theme'){ const idx=wallpaperThemes.findIndex(t=>t.name.toLowerCase()===arg.toLowerCase());
+      if(idx>-1){ applyWallpaper(idx); termPrint('Theme set to '+wallpaperThemes[idx].name+'.'); }
+      else termPrint('Unknown theme. Try: '+wallpaperThemes.map(t=>t.name).join(', ')); }
+    else termPrint(cmd+': command not found');
+  });
+
+  // ---- Calculator ----
+  let calcCur='0', calcPrev=null, calcOp=null, calcReset=false;
+  function calcRender(){ $('calcDisplay').textContent=calcCur; }
+  function calcDigit(d){ if(calcReset||calcCur==='0'){ calcCur=d; calcReset=false; } else calcCur+=d; calcRender(); }
+  function calcDot(){ if(calcReset){ calcCur='0.'; calcReset=false; calcRender(); return; } if(!calcCur.includes('.')) calcCur+='.'; calcRender(); }
+  function calcOpPress(op){ if(calcOp!==null && !calcReset) calcEquals(); calcPrev=parseFloat(calcCur); calcOp=op; calcReset=true; }
+  function calcEquals(){ if(calcOp===null||calcPrev===null) return; const cur=parseFloat(calcCur); let r=cur;
+    if(calcOp==='+') r=calcPrev+cur; else if(calcOp==='−') r=calcPrev-cur; else if(calcOp==='×') r=calcPrev*cur; else if(calcOp==='÷') r=cur===0?NaN:calcPrev/cur;
+    calcCur=String(Math.round(r*1e10)/1e10); calcOp=null; calcPrev=null; calcReset=true; calcRender(); }
+  function calcClear(){ calcCur='0'; calcPrev=null; calcOp=null; calcReset=false; calcRender(); }
+  function calcBack(){ if(calcReset) return; calcCur=calcCur.length>1?calcCur.slice(0,-1):'0'; calcRender(); }
+  function calcPercent(){ calcCur=String(parseFloat(calcCur)/100); calcRender(); }
+  function calcSign(){ calcCur=String(parseFloat(calcCur)*-1); calcRender(); }
+  const calcBtns=['C','±','%','÷','7','8','9','×','4','5','6','−','1','2','3','+','0','.','⌫','='];
+  const calcGrid=$('calcGrid');
+  calcBtns.forEach(b=>{ const btn=document.createElement('button'); btn.className='fe-btn'; btn.textContent=b; btn.style.cssText='font-size:15px; padding:10px 0;';
+    btn.onclick=()=>{ if(/^[0-9]$/.test(b)) calcDigit(b); else if(b==='.') calcDot(); else if(b==='C') calcClear(); else if(b==='±') calcSign(); else if(b==='%') calcPercent(); else if(b==='⌫') calcBack(); else if(b==='=') calcEquals(); else calcOpPress(b); };
+    calcGrid.appendChild(btn); });
+  calcRender();
+
+  // ---- Notes ----
+  function renderNotesApp(){
+    const notes=load('winstek_notes_app', []); const list=$('notesList'); list.innerHTML='';
+    if(!notes.length){ list.innerHTML='<div class="fe-empty">No notes yet. Click "+ New note" to leave yourself something.</div>'; return; }
+    notes.forEach((n,i)=>{
+      const row=document.createElement('div'); row.style.cssText='background:var(--panel2); border:1px solid var(--border); border-radius:6px; padding:10px;';
+      row.innerHTML='<textarea style="width:100%; min-height:60px; background:transparent; border:none; color:var(--fg); font-family:inherit; font-size:12.5px; resize:vertical; outline:none;">'+n.text+'</textarea><div style="text-align:right; margin-top:4px;"><button class="fbtn" style="border:1px solid var(--border); background:none; color:var(--muted); font-size:10.5px; padding:3px 7px; border-radius:3px; cursor:pointer;">Delete</button></div>';
+      row.querySelector('textarea').addEventListener('input', e=>{ const arr=load('winstek_notes_app', []); arr[i].text=e.target.value; save('winstek_notes_app', arr); });
+      row.querySelector('button').onclick=()=>{ const arr=load('winstek_notes_app', []); arr.splice(i,1); save('winstek_notes_app', arr); renderNotesApp(); };
+      list.appendChild(row);
+    });
+  }
+  $('notesAdd').onclick=()=>{ const arr=load('winstek_notes_app', []); arr.unshift({text:''}); save('winstek_notes_app', arr); renderNotesApp(); };
+  renderNotesApp();
+
+  // ---- Paint ----
+  const paintColors=['#f2f2f2','#e05a5a','#e0c15a','#7fca7f','#8ab4ff','#c78ae0'];
+  let paintColor=paintColors[0];
+  const paintSwatchesEl=$('paintSwatches');
+  paintColors.forEach(c=>{ const sw=document.createElement('div'); sw.className='swatch'+(c===paintColor?' active':''); sw.style.background=c;
+    sw.onclick=()=>{ paintColor=c; document.querySelectorAll('#paintSwatches .swatch').forEach(s=>s.classList.remove('active')); sw.classList.add('active'); };
+    paintSwatchesEl.appendChild(sw); });
+  const paintCanvas=$('paintCanvas'), pactx=paintCanvas.getContext('2d');
+  pactx.fillStyle='#111'; pactx.fillRect(0,0,440,320);
+  let paintDrawing=false, paintLastX=0, paintLastY=0;
+  function paintPos(e){ const r=paintCanvas.getBoundingClientRect(); const t=e.touches?e.touches[0]:e; return {x:t.clientX-r.left, y:t.clientY-r.top}; }
+  function paintStart(e){ paintDrawing=true; const p=paintPos(e); paintLastX=p.x; paintLastY=p.y; }
+  function paintMove(e){ if(!paintDrawing) return; const p=paintPos(e); pactx.strokeStyle=paintColor; pactx.lineWidth=3; pactx.lineCap='round'; pactx.beginPath(); pactx.moveTo(paintLastX,paintLastY); pactx.lineTo(p.x,p.y); pactx.stroke(); paintLastX=p.x; paintLastY=p.y; e.preventDefault(); }
+  function paintEnd(){ paintDrawing=false; }
+  paintCanvas.addEventListener('mousedown', paintStart); paintCanvas.addEventListener('mousemove', paintMove); document.addEventListener('mouseup', paintEnd);
+  paintCanvas.addEventListener('touchstart', paintStart, {passive:true}); paintCanvas.addEventListener('touchmove', paintMove, {passive:false}); paintCanvas.addEventListener('touchend', paintEnd);
+  $('paintClear').onclick=()=>{ pactx.fillStyle='#111'; pactx.fillRect(0,0,440,320); };
+
+  // ---- Aether ----
+  const aetherNotes=[{n:'C',f:261.6},{n:'D',f:293.7},{n:'E',f:329.6},{n:'G',f:392.0},{n:'A',f:440.0},{n:'C',f:523.3}];
+  const aetherKeys=$('aetherKeys');
+  aetherNotes.forEach(note=>{
+    const key=document.createElement('div');
+    key.style.cssText='width:46px; height:120px; background:var(--panel2); border:1px solid var(--border); border-radius:8px; cursor:pointer; display:flex; align-items:flex-end; justify-content:center; padding-bottom:10px; font-size:11px; color:var(--muted); transition:background .15s;';
+    key.textContent=note.n;
+    key.onclick=()=>{ playBeep(note.f, 1.1, 'sine'); key.style.background='var(--hover)'; setTimeout(()=>key.style.background='var(--panel2)', 250); };
+    aetherKeys.appendChild(key);
+  });
 
   // ---- Pong ----
   const pongCanvas=$('pongCanvas'), pctx=pongCanvas.getContext('2d');
@@ -708,9 +1199,10 @@ body{
     if(pong.bx>460){ pong.scoreSelf++; pongReset(); }
     if(pong.scoreSelf>=5||pong.scoreAI>=5){ pong.scoreSelf=0; pong.scoreAI=0; }
     $('pongScore').textContent=pong.scoreSelf+' — '+pong.scoreAI;
-    pctx.fillStyle='#0c0c0c'; pctx.fillRect(0,0,460,280); pctx.fillStyle='#cfcfcf';
-    pctx.fillRect(10, pong.pySelf, pong.pw, pong.ph); pctx.fillRect(460-10-pong.pw, pong.pyAI, pong.pw, pong.ph);
-    pctx.beginPath(); pctx.arc(pong.bx, pong.by, 6, 0, Math.PI*2); pctx.fillStyle='#8ab4ff'; pctx.fill(); }
+    pctx.fillStyle='rgba(12,12,12,0.35)'; pctx.fillRect(0,0,460,280);
+    pctx.save(); pctx.shadowColor='#cfcfcf'; pctx.shadowBlur=8; pctx.fillStyle='#cfcfcf';
+    pctx.fillRect(10, pong.pySelf, pong.pw, pong.ph); pctx.fillRect(460-10-pong.pw, pong.pyAI, pong.pw, pong.ph); pctx.restore();
+    pctx.save(); pctx.shadowColor='#8ab4ff'; pctx.shadowBlur=14; pctx.beginPath(); pctx.arc(pong.bx, pong.by, 6, 0, Math.PI*2); pctx.fillStyle='#8ab4ff'; pctx.fill(); pctx.restore(); }
   pongReset(); pongLoop();
 
   // ---- Cookie Clicker ----
@@ -744,8 +1236,9 @@ body{
       if(head.x<0||head.x>=COLS||head.y<0||head.y>=COLS||snake.some(s=>s.x===head.x&&s.y===head.y)) sgameover=true;
       else{ snake.unshift(head); if(head.x===sfood.x&&head.y===sfood.y){ sscore++; $('snakeScore').textContent='Score: '+sscore; snakeFood(); } else snake.pop(); } }
     if(!$('win-snake').classList.contains('hidden')){
-      sctx.fillStyle='#0c0c0c'; sctx.fillRect(0,0,400,400); sctx.fillStyle='#e05a5a'; sctx.fillRect(sfood.x*CELL, sfood.y*CELL, CELL-2, CELL-2);
-      snake.forEach((s,i)=>{ sctx.fillStyle=i===0?'#cfcfcf':'#8ab4ff'; sctx.fillRect(s.x*CELL, s.y*CELL, CELL-2, CELL-2); });
+      sctx.fillStyle='#0c0c0c'; sctx.fillRect(0,0,400,400);
+      sctx.save(); sctx.shadowColor='#e05a5a'; sctx.shadowBlur=12; sctx.fillStyle='#e05a5a'; sctx.fillRect(sfood.x*CELL, sfood.y*CELL, CELL-2, CELL-2); sctx.restore();
+      snake.forEach((s,i)=>{ sctx.save(); sctx.shadowColor='#8ab4ff'; sctx.shadowBlur=i===0?10:5; sctx.fillStyle=i===0?'#e8f2ff':'#8ab4ff'; sctx.fillRect(s.x*CELL, s.y*CELL, CELL-2, CELL-2); sctx.restore(); });
       if(sgameover){ sctx.fillStyle='rgba(0,0,0,0.6)'; sctx.fillRect(0,0,400,400); sctx.fillStyle='#fff'; sctx.font='16px sans-serif'; sctx.textAlign='center'; sctx.fillText('Game over — click or press a key to restart', 200, 200); } } }
   snakeInit(); setInterval(snakeTick,120);
 
@@ -761,7 +1254,8 @@ body{
     $('memoryStatus').textContent='Moves: 0'; renderMemory(); }
   function renderMemory(){ const grid=$('memoryGrid'); grid.innerHTML='';
     memCards.forEach(card=>{ const cell=document.createElement('div');
-      cell.style.cssText='width:64px; height:64px; background:'+(card.flipped||card.matched?'#222':'var(--panel2)')+'; border:1px solid var(--border); border-radius:6px; display:flex; align-items:center; justify-content:center; cursor:pointer; padding:10px;';
+      cell.className='mem-cell'+((card.flipped||card.matched)?' flipin':'');
+      cell.style.cssText+='width:64px; height:64px; background:'+(card.flipped||card.matched?'#222':'var(--panel2)')+'; border:1px solid var(--border); border-radius:6px; display:flex; align-items:center; justify-content:center; cursor:pointer; padding:10px;';
       cell.innerHTML=(card.flipped||card.matched)?card.shape:''; cell.onclick=()=>memFlip(card); grid.appendChild(cell); }); }
   function memFlip(card){ if(memLock||card.flipped||card.matched) return; card.flipped=true; memFlipped.push(card); renderMemory();
     if(memFlipped.length===2){ memMoves++; $('memoryStatus').textContent='Moves: '+memMoves; memLock=true; const [a,b]=memFlipped;
@@ -795,21 +1289,21 @@ body{
   function g2048Init(){ g2048Grid=Array(16).fill(0); g2048Score=0; g2048AddTile(); g2048AddTile(); renderG2048(); }
   function g2048AddTile(){ const empty=g2048Grid.map((v,i)=>v===0?i:null).filter(v=>v!==null); if(!empty.length) return;
     g2048Grid[empty[Math.floor(Math.random()*empty.length)]]=Math.random()<0.9?2:4; }
-  function renderG2048(){ const el=$('g2048Board'); el.innerHTML=''; $('g2048Score').textContent='Score: '+g2048Score;
-    g2048Grid.forEach(v=>{ const c=document.createElement('div'); c.className='g2048-cell'; c.style.background=g2048Colors[v]||'#8ab4ff'; c.style.color=v<=4?'#888':'#111'; c.textContent=v||''; el.appendChild(c); }); }
+  function renderG2048(prevGrid){ const el=$('g2048Board'); el.innerHTML=''; $('g2048Score').textContent='Score: '+g2048Score;
+    g2048Grid.forEach((v,i)=>{ const c=document.createElement('div'); c.className='g2048-cell'+((prevGrid && prevGrid[i]!==v && v!==0)?' pop':''); c.style.background=g2048Colors[v]||'#8ab4ff'; c.style.color=v<=4?'#888':'#111'; c.textContent=v||''; el.appendChild(c); }); }
   function g2048Line(vals){ let arr=vals.filter(v=>v!==0); let moved=false;
     for(let i=0;i<arr.length-1;i++){ if(arr[i]===arr[i+1]){ arr[i]*=2; g2048Score+=arr[i]; arr.splice(i+1,1); moved=true; } }
     while(arr.length<4) arr.push(0);
     for(let i=0;i<4;i++) if(arr[i]!==vals[i]) moved=true;
     return {arr, moved}; }
-  function g2048Move(dir){ let moved=false;
+  function g2048Move(dir){ let moved=false; const prevGrid=g2048Grid.slice();
     if(dir==='left'||dir==='right'){ for(let r=0;r<4;r++){ let row=g2048Grid.slice(r*4,r*4+4); if(dir==='right') row.reverse();
         const res=g2048Line(row); if(res.moved) moved=true; let arr=res.arr; if(dir==='right') arr.reverse();
         for(let c=0;c<4;c++) g2048Grid[r*4+c]=arr[c]; } }
     else{ for(let c=0;c<4;c++){ let col=[g2048Grid[c],g2048Grid[4+c],g2048Grid[8+c],g2048Grid[12+c]]; if(dir==='down') col.reverse();
         const res=g2048Line(col); if(res.moved) moved=true; let arr=res.arr; if(dir==='down') arr.reverse();
         for(let r=0;r<4;r++) g2048Grid[r*4+c]=arr[r]; } }
-    if(moved){ g2048AddTile(); renderG2048();
+    if(moved){ g2048AddTile(); renderG2048(prevGrid);
       if(!g2048CanMove()) setTimeout(()=>alert('Game over! Score: '+g2048Score),100); } }
   function g2048CanMove(){ if(g2048Grid.includes(0)) return true;
     for(let r=0;r<4;r++) for(let c=0;c<4;c++){ const v=g2048Grid[r*4+c];
@@ -823,7 +1317,7 @@ body{
   // ---- Whack-a-Mole ----
   let wmScore=0, wmTimeLeft=20, wmRunning=false, wmMoleIdx=-1, wmMoleTimer=null, wmCountdown=null;
   function renderWmBoard(){ const el=$('wmBoard'); el.innerHTML='';
-    for(let i=0;i<9;i++){ const hole=document.createElement('div'); hole.className='wm-hole'; hole.dataset.i=i;
+    for(let i=0;i<9;i++){ const hole=document.createElement('div'); hole.className='wm-hole'+(i===wmMoleIdx?' up':''); hole.dataset.i=i;
       hole.textContent = i===wmMoleIdx ? '🐹' : ''; hole.onclick=()=>wmHit(i); el.appendChild(hole); } }
   function wmHit(i){ if(!wmRunning) return; if(i===wmMoleIdx){ wmScore++; $('wmScore').textContent='Score: '+wmScore; wmMoleIdx=-1; renderWmBoard(); } }
   function wmPopMole(){ wmMoleIdx=Math.floor(Math.random()*9); renderWmBoard(); wmMoleTimer=setTimeout(wmPopMole, 500+Math.random()*500); }
@@ -832,6 +1326,153 @@ body{
     wmCountdown=setInterval(()=>{ wmTimeLeft--; $('wmTime').textContent='Time: '+wmTimeLeft;
       if(wmTimeLeft<=0){ clearInterval(wmCountdown); clearTimeout(wmMoleTimer); wmRunning=false; wmMoleIdx=-1; renderWmBoard(); alert('Time up! Final score: '+wmScore); } },1000); };
   renderWmBoard();
+
+  // ---- Neon Runner (3D, three.js) ----
+  let g3d=null;
+  function initGame3D(){
+    if(g3d) return g3d;
+    const container=$('game3dContainer');
+    const w=container.clientWidth||500, h=container.clientHeight||350;
+    const scene=new THREE.Scene();
+    scene.fog=new THREE.Fog(0x000010, 8, 40);
+    const camera=new THREE.PerspectiveCamera(65, w/h, 0.1, 100);
+    camera.position.set(0,3.4,6.5); camera.lookAt(0,0.5,-6);
+    const renderer=new THREE.WebGLRenderer({antialias:true, alpha:true});
+    renderer.setSize(w,h); renderer.setClearColor(0x05050f, 1);
+    container.innerHTML=''; container.appendChild(renderer.domElement);
+    scene.add(new THREE.AmbientLight(0x8899ff, 0.6));
+    const dl=new THREE.DirectionalLight(0xffffff, 0.7); dl.position.set(2,6,3); scene.add(dl);
+    const floorGeo=new THREE.PlaneGeometry(8, 200);
+    const floorMat=new THREE.MeshStandardMaterial({color:0x150a2a, emissive:0x0a0630, roughness:0.8});
+    const floor=new THREE.Mesh(floorGeo, floorMat); floor.rotation.x=-Math.PI/2; floor.position.z=-70; scene.add(floor);
+    const gridHelper=new THREE.GridHelper(8, 20, 0x8ab4ff, 0x4422aa); gridHelper.position.z=-70; scene.add(gridHelper);
+    for(const side of [-4.2,4.2]){
+      const wallGeo=new THREE.BoxGeometry(0.3, 3, 200);
+      const wallMat=new THREE.MeshStandardMaterial({color:0x1a0f33, emissive:0x3a1f6b, emissiveIntensity:0.4});
+      const wall=new THREE.Mesh(wallGeo, wallMat); wall.position.set(side, 1.2, -70); scene.add(wall);
+    }
+    const playerGeo=new THREE.BoxGeometry(0.8,0.8,0.8);
+    const playerMat=new THREE.MeshStandardMaterial({color:0x8ab4ff, emissive:0x2a5fdd, emissiveIntensity:0.6});
+    const player=new THREE.Mesh(playerGeo, playerMat); player.position.set(0,0.4,4); scene.add(player);
+    g3d={scene, camera, renderer, player, container, lane:0, lanes:[-2,0,2], jumpV:0, jumping:false,
+      obstacles:[], speed:0.08, score:0, running:false, raf:null,
+      colors:[0xe05a5a,0x7fca7f,0xe0c15a,0xc78ae0]};
+    return g3d;
+  }
+  function g3dSpawnObstacle(){
+    const lane=g3d.lanes[Math.floor(Math.random()*3)];
+    const geo=new THREE.BoxGeometry(0.9,0.9,0.9);
+    const mat=new THREE.MeshStandardMaterial({color:g3d.colors[Math.floor(Math.random()*g3d.colors.length)], emissiveIntensity:0.5});
+    mat.emissive=new THREE.Color(mat.color);
+    const mesh=new THREE.Mesh(geo, mat); mesh.position.set(lane, 0.45, -55);
+    g3d.scene.add(mesh); g3d.obstacles.push({mesh, lane});
+  }
+  function g3dResize(){
+    if(!g3d) return; const c=g3d.container; const w=c.clientWidth||500, h=c.clientHeight||350;
+    g3d.camera.aspect=w/h; g3d.camera.updateProjectionMatrix(); g3d.renderer.setSize(w,h);
+  }
+  function g3dEnd(){
+    g3d.running=false; cancelAnimationFrame(g3d.raf);
+    $('game3dOverlay').classList.remove('hidden');
+    $('game3dOverlay').innerHTML='<div style="font-size:16px; font-weight:600;">Game over</div><div style="color:#ccc;">Score: '+Math.floor(g3d.score)+'</div><button class="fe-btn" id="game3dStart">Play again</button>';
+    $('game3dStart').onclick=g3dStart;
+  }
+  function g3dLoop(){
+    g3d.raf=requestAnimationFrame(g3dLoop);
+    g3d.speed=Math.min(0.19, g3d.speed+0.000018);
+    g3d.score+=g3d.speed*6;
+    $('game3dHud').textContent='Score: '+Math.floor(g3d.score);
+    const targetX=g3d.lanes[g3d.lane]; g3d.player.position.x+=(targetX-g3d.player.position.x)*0.25;
+    if(g3d.jumping){ g3d.player.position.y+=g3d.jumpV; g3d.jumpV-=0.02;
+      if(g3d.player.position.y<=0.4){ g3d.player.position.y=0.4; g3d.jumping=false; g3d.jumpV=0; } }
+    g3d.player.rotation.y+=0.05; g3d.player.rotation.x+=0.02;
+    if(Math.random()<g3d.speed*0.045) g3dSpawnObstacle();
+    for(let i=g3d.obstacles.length-1;i>=0;i--){
+      const o=g3d.obstacles[i]; o.mesh.position.z+=g3d.speed*5+0.45;
+      o.mesh.rotation.y+=0.03;
+      const dz=Math.abs(o.mesh.position.z-g3d.player.position.z);
+      if(dz<0.7 && Math.abs(o.mesh.position.x-g3d.player.position.x)<0.7 && g3d.player.position.y<0.9){
+        g3dEnd(); return;
+      }
+      if(o.mesh.position.z>8){ g3d.scene.remove(o.mesh); g3d.obstacles.splice(i,1); }
+    }
+    g3d.renderer.render(g3d.scene, g3d.camera);
+  }
+  function g3dStart(){
+    initGame3D();
+    g3d.obstacles.forEach(o=>g3d.scene.remove(o.mesh)); g3d.obstacles=[];
+    g3d.lane=0; g3d.player.position.set(0,0.4,4); g3d.speed=0.08; g3d.score=0; g3d.jumping=false; g3d.jumpV=0;
+    $('game3dOverlay').classList.add('hidden');
+    g3d.running=true; g3dResize();
+    cancelAnimationFrame(g3d.raf); g3dLoop();
+  }
+  $('game3dStart').onclick=g3dStart;
+  document.addEventListener('keydown', e=>{
+    if($('win-3d').classList.contains('hidden') || !g3d || !g3d.running) return;
+    if(e.key==='ArrowLeft'){ g3d.lane=Math.max(0, g3d.lane-1); }
+    else if(e.key==='ArrowRight'){ g3d.lane=Math.min(2, g3d.lane+1); }
+    else if(e.key===' ' && !g3d.jumping){ g3d.jumping=true; g3d.jumpV=0.3; e.preventDefault(); }
+  });
+  window.addEventListener('resize', g3dResize);
+
+  // ---- Lock screen ----
+  const lockScreen=$('lockScreen');
+  let locked=true, unlocking=false;
+  function lockTick(){
+    const d=new Date(); const is24=load('winstek_clock24', true); let hh, suffix='';
+    if(is24){ hh=String(d.getHours()).padStart(2,'0'); } else { let h12=d.getHours()%12; if(h12===0) h12=12; hh=String(h12); suffix=d.getHours()>=12?' PM':' AM'; }
+    const mm=String(d.getMinutes()).padStart(2,'0');
+    $('lkTime').textContent=hh+':'+mm+suffix;
+    $('lkDate').textContent=d.toLocaleDateString(undefined,{weekday:'long', month:'long', day:'numeric'});
+  }
+  lockTick(); setInterval(lockTick, 15000);
+  function showLock(){
+    locked=true; unlocking=false;
+    lockScreen.style.display='flex';
+    lockScreen.classList.remove('fading');
+    lockScreen.style.transform='';
+    lockScreen.style.opacity='1';
+  }
+  function unlock(){
+    if(!locked || unlocking) return;
+    unlocking=true;
+    playBeep(760,0.09,'sine');
+    lockScreen.classList.add('fading');
+    setTimeout(()=>{ lockScreen.style.display='none'; locked=false; unlocking=false; }, 350);
+  }
+  document.addEventListener('keydown', e=>{
+    if(locked && e.key===' '){ e.preventDefault(); unlock(); }
+  });
+  lockScreen.addEventListener('click', ()=>{ if(locked) unlock(); });
+  let lkTouchStartY=null, lkDragging=false;
+  lockScreen.addEventListener('touchstart', e=>{ if(!locked) return; lkTouchStartY=e.touches[0].clientY; lkDragging=true; }, {passive:true});
+  lockScreen.addEventListener('touchmove', e=>{
+    if(!locked || !lkDragging || lkTouchStartY===null) return;
+    const dy=lkTouchStartY-e.touches[0].clientY;
+    if(dy>0) lockScreen.style.transform='translateY(-'+Math.min(dy,200)+'px)';
+  }, {passive:true});
+  lockScreen.addEventListener('touchend', e=>{
+    if(!locked || !lkDragging || lkTouchStartY===null) return;
+    const dy=lkTouchStartY-(e.changedTouches[0]?e.changedTouches[0].clientY:lkTouchStartY);
+    lkDragging=false; lkTouchStartY=null;
+    if(dy>70) unlock(); else{ lockScreen.style.transform=''; }
+  });
+  let lkMouseStartY=null, lkMouseDown=false;
+  lockScreen.addEventListener('mousedown', e=>{ if(!locked) return; lkMouseStartY=e.clientY; lkMouseDown=true; });
+  document.addEventListener('mousemove', e=>{
+    if(!locked || !lkMouseDown || lkMouseStartY===null) return;
+    const dy=lkMouseStartY-e.clientY;
+    if(dy>0) lockScreen.style.transform='translateY(-'+Math.min(dy,200)+'px)';
+  });
+  document.addEventListener('mouseup', e=>{
+    if(!locked || !lkMouseDown || lkMouseStartY===null) return;
+    const dy=lkMouseStartY-e.clientY;
+    lkMouseDown=false; lkMouseStartY=null;
+    if(dy>70) unlock(); else if(locked){ lockScreen.style.transform=''; }
+  });
+  // Show the lock screen right after the boot/logo sequence finishes, and keep it up
+  // (it sits above the desktop, so nothing "flashes" underneath before it appears).
+  setTimeout(showLock, bootDoneMs+3800);
 
 })();
 </script>
